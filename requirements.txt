@@ -1,0 +1,10 @@
+flask
+gunicorn
+groq
+requests
+pypdf
+python-docx
+pyTelegramBotAPI
+Flask
+gunicorn
+python-dotenv
