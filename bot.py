@@ -4,10 +4,11 @@ import telebot
 
 app = Flask(__name__)
 
-TOKEN = os.getenv("BOT_TOKEN")
+# =================== TOKEN (VAQTINCHA TO'G'RIDAN YOZAMIZ) ===================
+TOKEN = "8612921933:AAFHHytczKklS-Qtua_zrUF9mZsmZMk2jYM"
 bot = telebot.TeleBot(TOKEN)
 
-print("Bot ishga tushdi!")   # Log uchun
+print("✅ Bot ishga tushdi! Token kod ichida.")
 
 # ====================== WEBHOOK ======================
 @app.route('/' + TOKEN, methods=['POST'])
@@ -16,7 +17,7 @@ def webhook():
         json_str = request.get_data().decode('UTF-8')
         update = telebot.types.Update.de_json(json_str)
         bot.process_new_updates([update])
-        print("✅ Update qabul qilindi va ishlov berildi!")
+        print("✅ Update qabul qilindi!")
     except Exception as e:
         print("❌ XATO:", str(e))
     return 'OK', 200
@@ -24,11 +25,11 @@ def webhook():
 # ====================== BUYRUQLAR ======================
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.reply_to(message, "✅ Salom! Bot Render.com da muvaffaqiyatli ishlamoqda! 🚀")
+    bot.reply_to(message, "✅ Salom! Bot muvaffaqiyatli ishlamoqda! 🚀")
 
 @bot.message_handler(commands=['help'])
 def help_cmd(message):
-    bot.reply_to(message, "Yordam: /start yozing")
+    bot.reply_to(message, "Yordam: /start")
 
 @bot.message_handler(func=lambda m: True)
 def echo(message):
