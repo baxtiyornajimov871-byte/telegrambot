@@ -4,7 +4,6 @@ import telebot
 
 app = Flask(__name__)
 
-# TOKENNI .env yoki Render Environment Variables dan oladi (xavfsiz!)
 TOKEN = os.getenv("BOT_TOKEN")
 bot = telebot.TeleBot(TOKEN)
 
@@ -12,10 +11,11 @@ bot = telebot.TeleBot(TOKEN)
 @app.route('/' + TOKEN, methods=['POST'])
 def webhook():
     try:
-        update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
+        json_str = request.get_data().decode('UTF-8')
+        update = telebot.types.Update.de_json(json_str)
         bot.process_new_updates([update])
     except Exception as e:
-        print(e)
+        print("Xato:", e)
     return 'OK', 200
 
 # ====================== BUYRUQLAR ======================
@@ -25,19 +25,21 @@ def start(message):
 
 @bot.message_handler(commands=['help'])
 def help_command(message):
-    bot.reply_to(message, "Hozircha faqat /start va oddiy echo ishlaydi.")
+    bot.reply_to(message, "Hozircha /start buyruqi ishlaydi.")
 
-# Oddiy echo (yozgan narsangizni qaytaradi)
+# Echo (oddiy xabarlarni qaytarish)
 @bot.message_handler(func=lambda m: True)
 def echo(message):
-    bot.reply_to(message, message.text)
+    if message.text != TOKEN:   # tokenni qaytarmaslik uchun
+        bot.reply_to(message, message.text)
+    else:
+        bot.reply_to(message, "Tokenni yubormang 😊")
 
-# ====================== HEALTH CHECK ======================
+# Health check
 @app.route('/')
 def home():
     return "Telegram Bot Ishlamoqda! ✅"
 
-# ====================== SERVERNI ISHGA TUSHIRISH ======================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
